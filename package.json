@@ -1,0 +1,17 @@
+{
+  "name": "lexical-analyser",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "test",
+    "dev": "nodemon index.js"
+  },
+  "author": "Erick SC",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^2.0.22",
+    "semistandard": "^16.0.1"
+  }
+}
