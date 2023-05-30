@@ -1,33 +1,32 @@
-import fs from "fs";
-import readline from "readline";
-import { tokenPatterns } from "./table.js";
-import { tokens, States, Finals } from "./table.js";
+import fs from 'fs';
+import readline from 'readline';
+import { tokenPatterns, tokens, States, Finals } from './table.js';
 
-const inputFile = "file.txt";
-const outputFile = "output.txt";
-const errorFile = "error.txt";
+const inputFile = 'file.txt';
+const outputFile = 'output.txt';
+const errorFile = 'error.txt';
 
 // Create a readable stream to read the input file line by line
-const readStream = fs.createReadStream(inputFile, "utf8");
+const readStream = fs.createReadStream(inputFile, 'utf8');
 
 // Create a writable stream to write the results to the output file
-const writeStream = fs.createWriteStream(outputFile, "utf8");
+const writeStream = fs.createWriteStream(outputFile, 'utf8');
 
 // Create a writable stream to write the results to the error file
-const errorStream = fs.createWriteStream(errorFile, "utf8");
+const errorStream = fs.createWriteStream(errorFile, 'utf8');
 
 // Create an interface to read lines from the input stream
 const rl = readline.createInterface({
   input: readStream,
-  crlfDelay: Infinity,
+  crlfDelay: Infinity
 });
 
 // Tokenize the source code line by line
 const analyzeLine = (line) => {
   const results = [];
-  let prev = "";
+  let prev = '';
   let source = line;
-  let totalCount = line.length;
+  const totalCount = line.length;
   let count = 0;
 
   while (source.length) {
@@ -54,7 +53,7 @@ const analyzeLine = (line) => {
 
     if (!foundMatch) {
       // If no match is found, there is an invalid character
-      let position = totalCount - source.length + count;
+      const position = totalCount - source.length + count;
       throw new Error(
         `Invalid character: ${source[0]}, at position ${position}`
       );
@@ -66,10 +65,10 @@ const analyzeLine = (line) => {
 
 // Process each line of the input file
 let lineCount = 0;
-let curr = "";
+let curr = '';
 let state = 0;
-let rsl = [];
-rl.on("line", (line) => {
+const rsl = [];
+rl.on('line', (line) => {
   const analyzeChar = (char, position) => {
     const currState = States[state];
     if (currState.moves) {
@@ -81,10 +80,10 @@ rl.on("line", (line) => {
           curr.concat(char);
         }
       }
-    } else if (currState.will === "end") {
+    } else if (currState.will === 'end') {
       rsl.push({ type: Finals[state], value: curr });
       state = 0;
-      curr = "";
+      curr = '';
     } else {
       throw new Error(`Invalid character: ${char}, at position ${position}`);
     }
@@ -92,7 +91,7 @@ rl.on("line", (line) => {
 
   try {
     const results = analyzeLine(line);
-    const chars = line.split("");
+    const chars = line.split('');
 
     for (let index = 0; index < chars.length; index++) {
       const char = chars[index];
@@ -103,18 +102,19 @@ rl.on("line", (line) => {
     lineCount++;
     // Write the results to the output file
     writeStream.write(
-      results.map((token) => JSON.stringify(token)).join("\n") + "\n"
+      results.map((token) => JSON.stringify(token)).join('\n') + '\n'
     );
   } catch (error) {
     lineCount++;
-    errorStream.write("Error on line " + lineCount + " -> " + error);
-    console.error("Error on line " + lineCount + " -> " + error);
+    errorStream.write('Error on line ' + lineCount + ' -> ' + error);
+    console.error('Error on line ' + lineCount + ' -> ' + error);
   }
 });
 
 // Close the write stream when all lines have been processed
-rl.on("close", () => {
-  console.log("Finished");
+rl.on('close', () => {
+  console.log(rsl);
+  console.log('Finished');
   writeStream.end();
 });
 
