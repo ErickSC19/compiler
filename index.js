@@ -55,7 +55,7 @@ const analyzeLine = (line) => {
       // If no match is found, there is an invalid character
       const position = totalCount - source.length + count;
       throw new Error(
-        `Invalid character: ${source[0]}, at position ${position}`
+        {data: results, error: `Invalid character: ${source[0]}, at position ${position}`}
       );
     }
   }
@@ -70,6 +70,7 @@ let state = 0;
 const rsl = [];
 rl.on('line', (line) => {
   const analyzeChar = (char, position) => {
+    console.log(state);
     const currState = States[state];
     if (currState.moves) {
       for (const key in currState.moves) {
@@ -106,8 +107,11 @@ rl.on('line', (line) => {
     );
   } catch (error) {
     lineCount++;
-    errorStream.write('Error on line ' + lineCount + ' -> ' + error);
-    console.error('Error on line ' + lineCount + ' -> ' + error);
+    writeStream.write(
+      error.data.map((token) => JSON.stringify(token)).join('\n') + '\n'
+    );
+    errorStream.write('Error on line ' + lineCount + ' -> ' + error.error);
+    console.error('Error on line ' + lineCount + ' -> ' + error.error);
   }
 });
 
@@ -169,3 +173,7 @@ rl.on('close', () => {
   }
 }
  */
+
+function cAnalyzer(char, state, carry, curr, results, index) {
+
+}
