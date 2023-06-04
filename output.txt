@@ -2,9 +2,10 @@
 {"type":"INTEGER","value":"213"}
 {"type":"FLOAT","value":"231.323"}
 {"type":"STRING","value":"'dawddwaaw'"}
-{"type":"EQUAK","value":"="}
+{"type":"EQUAL","value":"="}
 {"type":"IS EQUALS","value":"=="}
 {"type":"COMMENT","value":"/*====DFSDF=DSFSDF=*/"}
 {"type":"INTEGER","value":"1235"}
 {"type":"DIVIDE","value":"/"}
 {"type":"MULTIPLY","value":"*"}
+{"type":"AND","value":"&&"}

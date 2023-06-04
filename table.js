@@ -167,7 +167,7 @@ export const Finals = {
   9: 'STRING',
   10: 'DIVIDE',
   14: 'COMMENT',
-  15: 'EQUAK',
+  15: 'EQUAL',
   16: 'IS EQUALS',
   17: 'MORE',
   18: 'MORE OR EQUAL',
