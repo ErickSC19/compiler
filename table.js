@@ -1,67 +1,9 @@
-export const tokenPatterns = {
-  identifier: /^\$[a-zA-Z_]\w*/,
-  float: /^\d+(\.\d+)/,
-  integer: /^\d+/,
-  string: /^'.*'/,
-  comment: /^\/\*.*\*\//,
-  plus: /^\+/,
-  minus: /^-/,
-  div: /^\//,
-  multiply: /^\*/,
-  equal: /^==/,
-  assign: /^=/,
-  and: /^&&/,
-  or: /^\|\|/,
-  different: /^!=/,
-  bigequ: /^>=/,
-  minequ: /^<=/,
-  big: /^>/,
-  min: /^</,
-  no: /^!/,
-  semicolon: /^;/,
-  colon: /^:/,
-  whitespace: /^\s+/,
-  tab: /^\t+/,
-  break: /^\n+/
-};
-
-export const tokenCarryPatterns = {
-  integer: /^\d+/,
-  string: /^(\n+)?.*'/,
-  comment: /^(\n+)?.*\*\//
-};
-
-export const tokens = {
-  identifier: 'IDENTIFIER',
-  integer: 'INTEGER',
-  float: 'FLOAT',
-  string: 'STRING',
-  comment: 'COMMENT',
-  plus: 'PLUS',
-  minus: 'MINUS',
-  div: 'DIVISION',
-  multiply: 'MULTIPLY',
-  assign: 'ASSIGN',
-  equal: 'EQUAL',
-  and: 'AND',
-  or: 'OR',
-  different: 'DIFFERENT',
-  bigequ: 'MORE OR EQUAL',
-  minequ: 'LESS OR EQUAL',
-  big: 'MORE',
-  min: 'LESS',
-  no: 'NEGATION',
-  semicolon: 'SEMICOLON',
-  colon: 'COLON',
-  whitespace: 'WHITESPACE',
-  tab: 'TAB',
-  break: 'LINE-BREAK'
-};
-
 export const States = {
   0: {
     moves: {
-      $: 1,
+      '\\s': 0,
+      '\\t': 0,
+      '\\$': 1,
       '\\d': 4,
       "'": 7,
       '\\/': 10,
@@ -82,33 +24,33 @@ export const States = {
     }
   },
   1: {
-    moves: { '^[a-zA-Z_]': 2 }
+    moves: { '[a-zA-Z_]': 2 }
   },
   2: {
-    moves: { '^[a-zA-Z_]*': 2, '^d': 3 },
+    moves: { '[a-zA-Z_]': 2, '\\d': 3 },
     will: 'end'
   },
   3: {
-    moves: { '^[a-zA-Z_]': 2, '^d': 3 },
+    moves: { '[a-zA-Z_]': 2, '\\d': 3 },
     will: 'end'
   },
   4: {
-    moves: { '^d': 4, '\\.': 5 },
+    moves: { '\\d': 4, '\\.': 5 },
     will: 'end'
   },
   5: {
-    moves: { '^d': 6 }
+    moves: { '\\d': 6 }
   },
   6: {
-    moves: { '^d': 6 },
+    moves: { '\\d': 6 },
     will: 'end'
   },
   7: {
-    moves: { '^.': 8 },
+    moves: { "^[^']*$": 8, "'": 9 },
     will: 'carry'
   },
   8: {
-    moves: { '^.': 8, "'": 9 }
+    moves: { "^[^']*$": 8, "'": 9 }
   },
   9: {
     will: 'end'
@@ -118,11 +60,11 @@ export const States = {
     will: 'end'
   },
   11: {
-    moves: { '^.': 12 },
+    moves: { '^[^\\*]': 12, '\\*': 13 },
     will: 'carry'
   },
   12: {
-    moves: { '^[.\\s\\t]': 12, '*': 13 }
+    moves: { '^[^\\*]': 12, '\\*': 13 }
   },
   13: {
     moves: { '\\/': 14 }
@@ -180,21 +122,21 @@ export const States = {
     will: 'end'
   },
   30: {
-    moves: { '^.': 31, '}': 32 },
+    moves: { '^[^}]*$': 31, '}': 32 },
     will: 'carry'
   },
   31: {
-    moves: { '^.': 31, '}': 32 }
+    moves: { '^[^}]*$': 31, '}': 32 }
   },
   32: {
     will: 'end'
   },
   33: {
-    moves: { '^.': 34, '\\]': 35 },
+    moves: { '^[^\\)]*$': 34, '\\]': 35 },
     will: 'carry'
   },
   34: {
-    moves: { '^.': 34, '\\]': 35 }
+    moves: { '^[^\\]]*$': 34, '\\]': 35 }
   },
   35: {
     will: 'end'
@@ -223,6 +165,7 @@ export const Finals = {
   4: 'INTEGER',
   6: 'FLOAT',
   9: 'STRING',
+  10: 'DIVIDE',
   14: 'COMMENT',
   15: 'EQUAK',
   16: 'IS EQUALS',
@@ -238,7 +181,7 @@ export const Finals = {
   27: 'OR',
   29: 'AND',
   32: 'BRACKETS',
-  35: '[sdda]',
+  35: '[]',
   38: 'PARENTASIS',
   39: 'SEMI-COLON',
   40: 'COLON'

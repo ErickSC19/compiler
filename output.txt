@@ -1,21 +1,10 @@
 {"type":"IDENTIFIER","value":"$sdad"}
-{"type":"WHITESPACE","value":" "}
 {"type":"INTEGER","value":"213"}
-{"type":"WHITESPACE","value":" "}
 {"type":"FLOAT","value":"231.323"}
-{"type":"WHITESPACE","value":" "}
 {"type":"STRING","value":"'dawddwaaw'"}
-{"type":"WHITESPACE","value":" "}
-{"type":"ASSIGN","value":"="}
-{"type":"WHITESPACE","value":" "}
-{"type":"EQUAL","value":"=="}
-{"type":"WHITESPACE","value":" "}
+{"type":"EQUAK","value":"="}
+{"type":"IS EQUALS","value":"=="}
 {"type":"COMMENT","value":"/*====DFSDF=DSFSDF=*/"}
-{"type":"WHITESPACE","value":" "}
 {"type":"INTEGER","value":"1235"}
-{"type":"WHITESPACE","value":" "}
-{"type":"DIVISION","value":"/"}
-{"type":"WHITESPACE","value":" "}
+{"type":"DIVIDE","value":"/"}
 {"type":"MULTIPLY","value":"*"}
-{"type":"WHITESPACE","value":" "}
-{"type":"AND","value":"&&"}
