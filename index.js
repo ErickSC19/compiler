@@ -29,7 +29,6 @@ let carry = false;
 const rsl = [];
 
 const analyzeChar = (char, position) => {
-  console.log(state);
   const currState = States[state];
   let matched = false;
   if (currState.moves) {
@@ -56,15 +55,22 @@ const analyzeChar = (char, position) => {
     console.log('   final -> ', curr);
     state = 0;
     curr = '';
+    return true;
   }
   if (!matched) {
     if (currState.will === 'end') {
+      if (currState.predates) {
+        if (Finals[currState.predates] === rsl[rsl.length-1].type) {
+          rsl.pop();
+        }
+      }
       rsl.push({ type: Finals[state], value: curr });
       carry = false;
       matched = true;
-      console.log('   final -> ', curr);
+      console.log('--> final -> ', curr);
       state = 0;
       curr = '';
+      return true;
     } else {
       throw new Error(`Invalid character: ${char}, at position ${position}`);
     }
@@ -84,11 +90,11 @@ rl.on('line', (line) => {
       }
       const pos = index + 1;
       console.log('   State -> ', state, ' - Pos -> ', index);
-      analyzeChar(char, pos);
+      const n = analyzeChar(char, pos);
+      if (n) {
+        index--;
+      }
     }
-    // if (currState.will !== 'carry') {
-    //   throw new Error(`Invalid character: ${char}, at position ${position}`);
-    // }
     lineCount++;
     // Write the results to the output file
     writeStream.write(
@@ -96,11 +102,13 @@ rl.on('line', (line) => {
     );
   } catch (error) {
     lineCount++;
+    // writes correct ones
     if (rsl) {
       writeStream.write(
         rsl.map((token) => JSON.stringify(token)).join('\n') + '\n'
       );   
     }
+    // writes error
     errorStream.write('Error on line ' + lineCount + ' -> ' + error);
     console.error('Error on line ' + lineCount + ' -> ' + error);
   }

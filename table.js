@@ -43,7 +43,8 @@ export const States = {
   },
   6: {
     moves: { '\\d': 6 },
-    will: 'end'
+    will: 'end',
+    predates: 4
   },
   7: {
     moves: { "^[^']*$": 8, "'": 9 },
@@ -77,28 +78,32 @@ export const States = {
     will: 'end'
   },
   16: {
-    will: 'end'
+    will: 'end',
+    predates: 15
   },
   17: {
     moves: { '=': 18 },
     will: 'end'
   },
   18: {
-    will: 'end'
+    will: 'end',
+    predates: 17
   },
   19: {
     moves: { '=': 20 },
     will: 'end'
   },
   20: {
-    will: 'end'
+    will: 'end',
+    predates: 19
   },
   21: {
     moves: { '=': 22 },
     will: 'end'
   },
   22: {
-    will: 'end'
+    will: 'end',
+    predates: 21
   },
   23: {
     will: 'end'
