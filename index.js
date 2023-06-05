@@ -117,7 +117,8 @@ rl.on('line', (line) => {
 // Close the write stream when all lines have been processed
 rl.on('close', () => {
   if (carry) {
-    errorStream.write('Error on line ' + lineCount + ' -> ' + curr[0] + ' was not closed');
+    console.error('Error on line ' + lineCount + ' -> ' + curr + ' was not closed');
+    errorStream.write('Error on line ' + lineCount + ' -> ' + curr + ' was not closed');
   }
   console.log(rsl);
   console.log('Finished');
