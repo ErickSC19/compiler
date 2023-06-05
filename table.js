@@ -17,8 +17,11 @@ export const States = {
       '\\|': 26,
       '&': 28,
       '{': 30,
+      '}': 31,
       '\\[': 33,
+      '\\]': 34,
       '\\(': 36,
+      '\\)': 37,
       ';': 39,
       ':': 40
     }
@@ -127,31 +130,28 @@ export const States = {
     will: 'end'
   },
   30: {
-    moves: { '^[^}]*$': 31, '}': 32 },
-    will: 'carry'
+    will: 'end'
   },
   31: {
-    moves: { '^[^}]*$': 31, '}': 32 }
+   will: 'end'
   },
   32: {
     will: 'end'
   },
   33: {
-    moves: { '^[^\\)]*$': 34, '\\]': 35 },
-    will: 'carry'
+    will: 'end'
   },
   34: {
-    moves: { '^[^\\]]*$': 34, '\\]': 35 }
+    moves: 'end'
   },
   35: {
     will: 'end'
   },
   36: {
-    moves: { '^.': 37, '\\)': 38 },
-    will: 'carry'
+    will: 'end'
   },
   37: {
-    moves: { '^.': 37, '\\)': 38 }
+    will: 'end'
   },
   38: {
     will: 'end'
@@ -185,9 +185,12 @@ export const Finals = {
   25: 'MINUS',
   27: 'OR',
   29: 'AND',
-  32: 'BRACKETS',
-  35: '[]',
-  38: 'PARENTASIS',
+  30: 'OPEN BRACKETS',
+  31: 'CLOSE BRACKETS',
+  33: ' OPEN [',
+  34: 'CLOSE ]',
+  36: 'OPEN PARENTESIS',
+  37: 'CLOSE PARENTESIS',
   39: 'SEMI-COLON',
   40: 'COLON'
 };
