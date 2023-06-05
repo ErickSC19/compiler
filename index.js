@@ -96,11 +96,13 @@ rl.on('line', (line) => {
     );
   } catch (error) {
     lineCount++;
-    writeStream.write(
-      error.data.map((token) => JSON.stringify(token)).join('\n') + '\n'
-    );
-    errorStream.write('Error on line ' + lineCount + ' -> ' + error.error);
-    console.error('Error on line ' + lineCount + ' -> ' + error.error);
+    if (rsl) {
+      writeStream.write(
+        rsl.map((token) => JSON.stringify(token)).join('\n') + '\n'
+      );   
+    }
+    errorStream.write('Error on line ' + lineCount + ' -> ' + error);
+    console.error('Error on line ' + lineCount + ' -> ' + error);
   }
 });
 
