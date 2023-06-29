@@ -1,9 +1,10 @@
-{"type":"STRING","value":"'hola a todos'"}
-{"type":"COMMENT","value":" /* comentario */"}
-{"type":"OPEN BRACKETS","value":" {"}
-{"type":"OPEN PARENTESIS","value":" ("}
+{"type":"STRING","value":"'"}
+{"type":"COMMENT","value":"/"}
+{"type":"OPEN BRACKETS","value":"{"}
+{"type":"OPEN PARENTESIS","value":"("}
 {"type":"CLOSE PARENTESIS","value":")"}
 {"type":"SEMI-COLON","value":";"}
-{"type":"AND","value":" &&"}
-{"type":"OR","value":" ||"}
-{"type":"MORE OR EQUAL","value":" >="}
+{"type":"AND","value":"&"}
+{"type":"OR","value":"|"}
+{"type":"MORE OR EQUAL","value":"="}
+{"type":"RESERVED","value":"false"}
