@@ -26,6 +26,7 @@ export const States = {
       ":": 40,
       ",": 41,
       "[a-z]": 42,
+      ".": 43,
     },
   },
   1: {
@@ -169,7 +170,13 @@ export const States = {
   },
   42: {
     will: "reserved",
-  //  moves: { "[a-z]": 42 },
+    //  moves: { "[a-z]": 42 },
+  },
+  43: {
+    moves: { ".": 44 },
+  },
+  44: {
+    will: "end",
   },
 };
 
@@ -196,13 +203,14 @@ export const Finals = {
   29: "AND",
   30: "OPEN BRACKETS",
   31: "CLOSE BRACKETS",
-  33: " OPEN [",
+  33: "OPEN [",
   34: "CLOSE ]",
   36: "OPEN PARENTESIS",
   37: "CLOSE PARENTESIS",
   39: "SEMI-COLON",
   40: "COLON",
   41: "COMMA",
+  44: "DOTS"
 };
 
 export const Reserved = {

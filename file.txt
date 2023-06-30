@@ -1,1 +1,6 @@
-'hola a todos' /* comentario */ { (); && || >= false
+program.id;
+var $sdsd, $sd, $gth : > 'sfrgereg';
+{
+    id = false != true;
+    id = false != true;
+} 
