@@ -1,6 +1,7 @@
-program.id;
-var $sdsd, $sd, $gth : > 'sfrgereg';
+program.init;
+var $sdsd, $sd, $gth :string;
 {
-    id = false != true;
-    id = false != true;
+    $sdsd = 'sfrgereg';
+    $id = false != true;
+    $id = false != true;
 } 

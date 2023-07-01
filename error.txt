@@ -1,1 +1,0 @@
-Error on line 1 -> Error: Invalid character: ;, at position 11Error on line 2 -> Error: Invalid character: v, at position 1Error on line 3 -> Error: Invalid character: {, at position 1Error on line 4 -> Error: Invalid character:  , at position 1Error on line 5 -> Error: Invalid character:  , at position 1Error on line 6 -> Error: Invalid character: }, at position 1

@@ -1,0 +1,6 @@
+program.init;
+{ 
+    if ( $id ) then {
+        $id = false;
+    };
+}
