@@ -31,7 +31,7 @@ Lang {
   aux7 = "," expresion aux7 --writecont
     | ")"
   conditional = "if(" expresion ")then{" statutes aux8
-  aux8 = "else{" statutes "}" --doelse
+  aux8 = "}else{" statutes "}" --doelse
     |  "}"
   expresion = exp aux9 ?
   aux9 = relational expresion 
@@ -58,9 +58,9 @@ Lang {
 
 export const syntacticAnalizer = (tokens) => {
   const matchResult = prog.match(tokens);
-  if (matchResult.succeeded()) {
+  if (!matchResult.failed()) {
     return console.log('Finished successfully');
   } else {
-    throw new Error('Syntax Error');
+    throw new Error(`Syntax Error: ${matchResult.message}`);
   }
 };

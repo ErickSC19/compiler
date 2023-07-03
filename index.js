@@ -136,8 +136,8 @@ rl.on('line', (line) => {
       );
     }
     // writes error
-    errorStream.write('Error on line ' + lineCount + ' -> ' + error);
-    console.error('Error on line ' + lineCount + ' -> ' + error);
+    errorStream.write('Error on line ' + lineCount + ' -> ' + error + '\n');
+    console.error('Error on line ' + lineCount + ' -> ' + error + '\n');
     // rl.off();
   }
 });
@@ -170,10 +170,12 @@ rl.on('close', () => {
   }
   // console.log('---->', res);
   try {
+    console.log(res);
     syntacticAnalizer(res);
   } catch (error) {
-    console.log(error);
     console.log(rsl);
+    console.log(error);
+    errorStream.write('Syntax Error');
   }
   writeStream.end();
   errorStream.end();

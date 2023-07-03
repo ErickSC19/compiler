@@ -2,5 +2,7 @@ program.init;
 { 
     if ( $id ) then {
         $id = false;
+    } else {
+        $id = true;
     };
 }
