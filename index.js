@@ -1,10 +1,12 @@
 import fs from 'fs';
 import readline from 'readline';
 import { States, Finals, Reserved } from './table.js';
-import { syntacticAnalizer } from './sintax.js';
+import { syntacticAnalizer } from './syntax.js';
+import { SymbolsTableGlobal } from './symbols.js';
 
 const inputFile = 'file2.txt';
 const outputFile = 'output.txt';
+const tableFile = 'symtable.txt';
 const errorFile = 'error.txt';
 
 // Create a readable stream to read the input file line by line
@@ -153,24 +155,26 @@ rl.on('close', () => {
     );
   }
   let res = '';
+  let tks = '';
   for (let index = 0; index < rsl.length; index++) {
-    const element = rsl[index];
+    const token = rsl[index];
     if (
-      element.type === 'INTEGER' ||
-      element.type === 'FLOAT' ||
-      element.type === 'IDENTIFIER' ||
-      element.type === 'STRING'
+      token.type === 'INTEGER' ||
+      token.type === 'FLOAT' ||
+      token.type === 'IDENTIFIER' ||
+      token.type === 'STRING'
     ) {
-      res = res.concat(`${element.type}`);
+      res = res.concat(`${token.type}`);
       // tokens = tokens + element.type;
-    } else if (element.type !== 'COMMENT') {
-      res = res.concat(`${element.value}`);
+    } else if (token.type !== 'COMMENT') {
+      res = res.concat(`${token.value}`);
       // tokens = tokens + curr;
     }
+    tks = tks.concat(`${token.value}`);
   }
   // console.log('---->', res);
   try {
-    console.log(res);
+    console.log(tks);
     syntacticAnalizer(res);
   } catch (error) {
     console.log(rsl);
