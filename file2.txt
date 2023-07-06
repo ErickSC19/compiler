@@ -1,4 +1,5 @@
 program.init;
+var $id:string;
 { 
     if ( $id ) then {
         $id = false;

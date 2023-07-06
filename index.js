@@ -175,7 +175,7 @@ rl.on('close', () => {
   // console.log('---->', res);
   try {
     console.log(tks);
-    syntacticAnalizer(res);
+    syntacticAnalizer(res, tks);
   } catch (error) {
     console.log(rsl);
     console.log(error);

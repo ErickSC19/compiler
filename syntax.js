@@ -1,4 +1,5 @@
-import * as ohm from 'ohm-js';
+import * as ohm from "ohm-js";
+import { SymbolsTableGlobal } from "./symbols.js";
 const prog = ohm.grammar(String.raw`
 Lang {
   program = "program.init;" body
@@ -56,10 +57,36 @@ Lang {
 }
 `);
 
-export const syntacticAnalizer = (tokens) => {
+export const syntacticAnalizer = (tokens, toksStr) => {
   const matchResult = prog.match(tokens);
   if (!matchResult.failed()) {
-    return console.log('Finished successfully');
+    let currType = "";
+    while (toksStr.length > 0) {
+      const varSt = toksStr.indexOf("var");
+      const idSt = toksStr.indexOf("$");
+      if (varSt < idSt) {
+        const fromVarD = toksStr.slice(varSt);
+        const typeDef = fromVarD.indexOf(":");
+        const typeEndDef = fromVarD.indexOf(";");
+        currType = fromVarD.slice(typeDef, typeEndDef);
+        toksStr.slice(typeEndDef);
+      } else {
+        const fromVar = toksStr.slice(idSt);
+        if (currType) {
+          const varDef = fromVar.indexOf("$");
+          const varEndDef = fromVar.indexOf(",");
+          const vname = fromVar.slice(varDef, varEndDef);
+          SymbolsTableGlobal.add(vname, currType, null);
+          toksStr.slice(varEndDef);
+        } else {
+          const varDef = fromVar.indexOf("$");
+          const varEndDef = fromVar.indexOf(",");
+          const vname = fromVar.slice(varDef, varEndDef);
+        }
+      }
+      break;
+    }
+    return console.log("Finished successfully");
   } else {
     throw new Error(`Syntax Error: ${matchResult.message}`);
   }
