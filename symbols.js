@@ -53,7 +53,6 @@ export default SymbolsTable;
 
 export const SymbolsTableGlobal = {
   symbols: {
-    $dfs: { type: "boolean", value: "true" },
   },
   get: function (name) {
     if (this.symbols[name]) {
@@ -74,10 +73,13 @@ export const SymbolsTableGlobal = {
     }
   },
   update: function (name, newValue, valueType) {
+    // console.log('--> updating: ', name, newValue, valueType);
     const prev = this.get(name);
     if (prev) {
       if (prev.type === valueType) {
         this.symbols[name].value = newValue;
+      } else {
+        throw new Error("Value to assign does not match type with identifier");
       }
     } else {
       throw new Error("identifier does not exists, can not update");

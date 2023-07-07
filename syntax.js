@@ -1,5 +1,5 @@
-import * as ohm from 'ohm-js';
-import { SymbolsTableGlobal } from './symbols.js';
+import * as ohm from "ohm-js";
+import { SymbolsTableGlobal } from "./symbols.js";
 const prog = ohm.grammar(String.raw`
 Lang {
   program = "program.init;" body
@@ -57,59 +57,48 @@ Lang {
 }
 `);
 
-export const syntacticAnalizer = (tokens, toksStr) => {
+export const syntacticAnalizer = (tokens, rsl) => {
   const matchResult = prog.match(tokens);
   if (!matchResult.failed()) {
-    let currType = '';
-    while (toksStr.length > 0) {
-      const varSt = toksStr.indexOf('var');
-      const idSt = toksStr.indexOf('$');
-      if (varSt < idSt) {
-        const fromVarD = toksStr.slice(varSt);
-        const typeDef = fromVarD.indexOf(':');
-        const typeEndDef = fromVarD.indexOf(';');
-        currType = fromVarD.slice(typeDef, typeEndDef);
-        toksStr.slice(typeEndDef);
-      } else {
-        const fromVar = toksStr.slice(idSt);
+    const toksArr = rsl;
+    let declaring = false;
+    let currType = "";
+    for (let index = 0; index < toksArr.length; index++) {
+      const element = toksArr[index];
+      if (element.type === "RESERVED" && element.value === "var") {
+        declaring = true;
+        const typ = toksArr.findIndex((el) => el.type === "COLON");
+        currType = toksArr[typ + 1].value;
+        continue;
+      }
+      if (element.type === "IDENTIFIER") {
         if (currType) {
-          const varDef = fromVar.indexOf('$');
-          let varEndDef = fromVar.indexOf(',');
-          const decEnd = fromVar.indexOf(';');
-
-          if (varEndDef < 0) {
-            if (varDef > decEnd || (varDef < 0 && decEnd < 0)) {
-              currType = 0;
-              toksStr.slice(1);
-              continue;
-            } else {
-              varEndDef = fromVar.indexOf(':');
-            }
+          SymbolsTableGlobal.add(element.value, currType, null);
+        } else if (toksArr[index + 1].type === "EQUAL") {
+          const newVal = toksArr[index + 2].value;
+          let atype = toksArr[index + 2].type.toLocaleLowerCase();
+          if (newVal === "true" || newVal === "false") {
+            atype = "boolean";
           }
-          const vname = fromVar.slice(varDef, varEndDef);
-          SymbolsTableGlobal.add(vname, currType, null);
-          toksStr.slice(varEndDef);
-        } else {
-          const varDef = fromVar.indexOf('$');
-          const varEndDef = fromVar.indexOf('=');
-          const iname = fromVar.slice(varDef, varEndDef);
-          const valDef = fromVar.indexOf('$');
-          const valEndDef = fromVar.indexOf('=');
-          const vname = fromVar.slice(valDef, valEndDef);
-          let ntype;
-          if (vname.startsWith('\'')) {
-            ntype = 'string';
-          } else if (vname.startsWith('f') || vname.startsWith('t')) {
-            ntype = 'boolean';
-          } else if (vname[0].match('\\d')) {
-            ntype = 'int';
+          console.log(element);
+          SymbolsTableGlobal.update(element.value, newVal, atype);
+        }
+        if (
+          toksArr[index + 1].type === "COLON"
+        ) {
+          if (toksArr[index + 4].type === "IDENTIFIER") {
+            const currArr = toksArr.slice(index + 4);
+            const typ = currArr.findIndex((el) => el.type === "COLON");
+            currType = currArr[typ + 1].value;
+          } else {
+            currType = "";
+            declaring = false;
           }
-          SymbolsTableGlobal.update(iname, vname, ntype);
-          toksStr.slice(valEndDef);
         }
       }
     }
-    return console.log('Finished successfully');
+    console.log("Finished successfully");
+    return SymbolsTableGlobal.symbols;
   } else {
     throw new Error(`Syntax Error: ${matchResult.message}`);
   }

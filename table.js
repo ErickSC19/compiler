@@ -183,7 +183,7 @@ export const States = {
 export const Finals = {
   2: 'IDENTIFIER',
   3: 'IDENTIFIER',
-  4: 'INTEGER',
+  4: 'INT',
   6: 'FLOAT',
   9: 'STRING',
   10: 'DIVIDE',

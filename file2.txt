@@ -1,5 +1,5 @@
 program.init;
-var $id:string;
+var $id2:string; $id:boolean;
 { 
     if ( $id ) then {
         $id = false;

@@ -6,7 +6,7 @@ import { SymbolsTableGlobal } from './symbols.js';
 
 const inputFile = 'file2.txt';
 const outputFile = 'output.txt';
-const tableFile = 'symtable.txt';
+const symFile = 'symtable.txt';
 const errorFile = 'error.txt';
 
 // Create a readable stream to read the input file line by line
@@ -17,6 +17,9 @@ const writeStream = fs.createWriteStream(outputFile, 'utf8');
 
 // Create a writable stream to write the results to the error file
 const errorStream = fs.createWriteStream(errorFile, 'utf8');
+
+// Create a writable stream to write the results to the error file
+const symStream = fs.createWriteStream(symFile, 'utf8');
 
 // Create an interface to read lines from the input stream
 const rl = readline.createInterface({
@@ -37,10 +40,10 @@ const analyzeChar = (char, position) => {
   if (currState.moves) {
     for (const key in currState.moves) {
       const compare = RegExp(key);
-      console.log('Comparison -> ', compare, ' to: <', char, '>');
-      console.log('current token -> ', curr);
+      //console.log('Comparison -> ', compare, ' to: <', char, '>');
+      //console.log('current token -> ', curr);
       const match = char.match(compare);
-      console.log('Matched? -> ', !!match);
+      //console.log('Matched? -> ', !!match);
       if (match) {
         if (currState.will === 'carry') {
           carry = true;
@@ -49,7 +52,7 @@ const analyzeChar = (char, position) => {
         matched = true;
         curr.length === 0 ? (curr = char) : (curr = curr + char);
         curr = curr.trimStart();
-        console.log('new curr <', curr, '>');
+        //console.log('new curr <', curr, '>');
         break;
       }
     }
@@ -57,7 +60,7 @@ const analyzeChar = (char, position) => {
     rsl.push({ type: Finals[state], value: curr.trim() });
     carry = false;
     matched = true;
-    console.log('--> final -> ', curr);
+    //console.log('--> final -> ', curr);
     state = 0;
     curr = '';
     return true;
@@ -66,19 +69,19 @@ const analyzeChar = (char, position) => {
       for (let index = 0; index < Reserved[curr[0]].length; index++) {
         const word = Reserved[curr[0]][index];
         if (word.includes(curr)) {
-          console.log();
+          //console.log();
           if (word.length === curr.length) {
-            console.log('Reserved -> ', word, ' to: <', curr, '>');
+            //console.log('Reserved -> ', word, ' to: <', curr, '>');
             rsl.push({ type: 'RESERVED', value: curr.trim() });
             carry = false;
             matched = true;
-            console.log('--> final -> ', curr);
+            //console.log('--> final -> ', curr);
             state = 0;
             curr = '';
             return true;
           } else {
             curr = curr + char;
-            console.log('Reserved -> ', word, ' to: <', curr, '>');
+            //console.log('Reserved -> ', word, ' to: <', curr, '>');
             matched = true;
             break;
           }
@@ -96,7 +99,7 @@ const analyzeChar = (char, position) => {
       rsl.push({ type: Finals[state], value: curr.trim() });
       carry = false;
       matched = true;
-      console.log('--> final -> ', curr);
+      //console.log('--> final -> ', curr);
       state = 0;
       curr = '';
       return true;
@@ -109,7 +112,7 @@ const analyzeChar = (char, position) => {
 rl.on('line', (line) => {
   try {
     const chars = line.split('');
-    console.log(chars, chars.length);
+    //console.log(chars, chars.length);
     for (let index = 0; index <= chars.length; index++) {
       let char;
       if (index < chars.length) {
@@ -118,7 +121,7 @@ rl.on('line', (line) => {
         char = ' ';
       }
       const pos = index + 1;
-      console.log('   State -> ', state, ' - Pos -> ', index);
+      //console.log('   State -> ', state, ' - Pos -> ', index);
       const n = analyzeChar(char, pos);
       if (n) {
         index--;
@@ -175,12 +178,15 @@ rl.on('close', () => {
   // console.log('---->', res);
   try {
     console.log(tks);
-    syntacticAnalizer(res, tks);
+    const r = syntacticAnalizer(res, rsl);
+    console.log(r);
+    symStream.write(JSON.stringify(r));
   } catch (error) {
     console.log(rsl);
     console.log(error);
     errorStream.write('Syntax Error');
   }
   writeStream.end();
+  symStream.end();
   errorStream.end();
 });
