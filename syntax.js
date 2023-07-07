@@ -1,5 +1,5 @@
-import * as ohm from "ohm-js";
-import { SymbolsTableGlobal } from "./symbols.js";
+import * as ohm from 'ohm-js';
+import { SymbolsTableGlobal } from './symbols.js';
 const prog = ohm.grammar(String.raw`
 Lang {
   program = "program.init;" body
@@ -60,33 +60,56 @@ Lang {
 export const syntacticAnalizer = (tokens, toksStr) => {
   const matchResult = prog.match(tokens);
   if (!matchResult.failed()) {
-    let currType = "";
+    let currType = '';
     while (toksStr.length > 0) {
-      const varSt = toksStr.indexOf("var");
-      const idSt = toksStr.indexOf("$");
+      const varSt = toksStr.indexOf('var');
+      const idSt = toksStr.indexOf('$');
       if (varSt < idSt) {
         const fromVarD = toksStr.slice(varSt);
-        const typeDef = fromVarD.indexOf(":");
-        const typeEndDef = fromVarD.indexOf(";");
+        const typeDef = fromVarD.indexOf(':');
+        const typeEndDef = fromVarD.indexOf(';');
         currType = fromVarD.slice(typeDef, typeEndDef);
         toksStr.slice(typeEndDef);
       } else {
         const fromVar = toksStr.slice(idSt);
         if (currType) {
-          const varDef = fromVar.indexOf("$");
-          const varEndDef = fromVar.indexOf(",");
+          const varDef = fromVar.indexOf('$');
+          let varEndDef = fromVar.indexOf(',');
+          const decEnd = fromVar.indexOf(';');
+
+          if (varEndDef < 0) {
+            if (varDef > decEnd || (varDef < 0 && decEnd < 0)) {
+              currType = 0;
+              toksStr.slice(1);
+              continue;
+            } else {
+              varEndDef = fromVar.indexOf(':');
+            }
+          }
           const vname = fromVar.slice(varDef, varEndDef);
           SymbolsTableGlobal.add(vname, currType, null);
           toksStr.slice(varEndDef);
         } else {
-          const varDef = fromVar.indexOf("$");
-          const varEndDef = fromVar.indexOf(",");
-          const vname = fromVar.slice(varDef, varEndDef);
+          const varDef = fromVar.indexOf('$');
+          const varEndDef = fromVar.indexOf('=');
+          const iname = fromVar.slice(varDef, varEndDef);
+          const valDef = fromVar.indexOf('$');
+          const valEndDef = fromVar.indexOf('=');
+          const vname = fromVar.slice(valDef, valEndDef);
+          let ntype;
+          if (vname.startsWith('\'')) {
+            ntype = 'string';
+          } else if (vname.startsWith('f') || vname.startsWith('t')) {
+            ntype = 'boolean';
+          } else if (vname[0].match('\\d')) {
+            ntype = 'int';
+          }
+          SymbolsTableGlobal.update(iname, vname, ntype);
+          toksStr.slice(valEndDef);
         }
       }
-      break;
     }
-    return console.log("Finished successfully");
+    return console.log('Finished successfully');
   } else {
     throw new Error(`Syntax Error: ${matchResult.message}`);
   }
