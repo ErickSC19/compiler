@@ -94,3 +94,19 @@ export const SymbolsTableGlobal = {
     }
   },
 };
+
+/** 
+  @param {String[]} params A string containing the tokens at the right side of the expression, including closing semicolon.
+  @returns {String} String with the final value.
+*/
+function optimize(params) {
+  const len = params.length;
+  if (len > 2) {
+    for (let index = 0; index < params.length; index++) {
+      const token = params[index];
+      
+    }
+  }
+
+  return len;
+}

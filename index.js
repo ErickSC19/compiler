@@ -184,7 +184,7 @@ rl.on('close', () => {
   } catch (error) {
     console.log(rsl);
     console.log(error);
-    errorStream.write('Syntax Error');
+    errorStream.write(`${error}`);
   }
   writeStream.end();
   symStream.end();

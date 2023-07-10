@@ -75,10 +75,19 @@ export const syntacticAnalizer = (tokens, rsl) => {
         if (currType) {
           SymbolsTableGlobal.add(element.value, currType, null);
         } else if (toksArr[index + 1].type === "EQUAL") {
-          const newVal = toksArr[index + 2].value;
-          let atype = toksArr[index + 2].type.toLocaleLowerCase();
-          if (newVal === "true" || newVal === "false") {
-            atype = "boolean";
+          let newVal;
+          let atype;
+          
+          if (toksArr[index + 2].type === "IDENTIFIER") {   
+            const id = SymbolsTableGlobal.get(toksArr[index + 2].value);
+            newVal = id.value;
+            atype = id.type;
+          } else {
+            newVal = toksArr[index + 2].value;
+            atype = toksArr[index + 2].type.toLocaleLowerCase();
+            if (newVal === "true" || newVal === "false") {
+              atype = "boolean";
+            }
           }
           console.log(element);
           SymbolsTableGlobal.update(element.value, newVal, atype);
