@@ -52,8 +52,7 @@ const SymbolsTable = {
 export default SymbolsTable;
 
 export const SymbolsTableGlobal = {
-  symbols: {
-  },
+  symbols: {},
   get: function (name) {
     if (this.symbols[name]) {
       return {
@@ -95,17 +94,58 @@ export const SymbolsTableGlobal = {
   },
 };
 
-/** 
-  @param {String[]} params A string containing the tokens at the right side of the expression, including closing semicolon.
-  @returns {String} String with the final value.
-*/
-function optimize(params) {
+/**
+ * @param {string[]} params - A string containing the tokens at the right side of the expression, including closing semicolon.
+ * @param {string} rtype - The type of the identifier to be asigned
+ * @returns {string} Final value.
+ */
+export function optimize(params, rtype) {
   const len = params.length;
   if (len > 2) {
+    const scopes = [[]]
+    let scope = 0;
     for (let index = 0; index < params.length; index++) {
       const token = params[index];
-      
+      let newVal;
+      let atype;
+
+      if (token.type === "IDENTIFIER") {
+        const id = SymbolsTableGlobal.get(token.value);
+        newVal = id.value;
+        atype = id.type;
+      } else if(token.value === '(' || token.value === ')') {
+
+      } else {
+        newVal = token.value;
+        atype = token.type.toLocaleLowerCase();
+        if (newVal === "true" || newVal === "false") {
+          atype = "boolean";
+        }
+      }
+      if (atype !== rtype) {
+        throw new Error('types does not match');
+      }
+      scopes[scope].push(newVal)
     }
+  } else {
+    let newVal;
+    let atype;
+
+    if (params[0].type === "IDENTIFIER") {
+      const id = SymbolsTableGlobal.get(params[0].value);
+      newVal = id.value;
+      atype = id.type;
+    } else {
+      newVal = params[0].value;
+      atype = params[0].type.toLocaleLowerCase();
+      if (newVal === "true" || newVal === "false") {
+        atype = "boolean";
+      }
+    }
+    if (atype !== rtype) {
+      throw new Error('types does not match');
+    }
+    return newVal;
   }
 
   return len;
