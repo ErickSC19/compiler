@@ -11,7 +11,7 @@ Lang {
   aux2 = ",IDENTIFIER" aux2 ? 
   types = standard | vec
   standard = "int" | "float" | "string" | "boolean"
-  principal = "{" statutes "}"
+  principal = "{" statutes "}."
   statutes = estatute ";" statutes ?
   vec = "array[INT..INT" aux3
   aux3 = ",INT..INT" aux3 | "]of" standard

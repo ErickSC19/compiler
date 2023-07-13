@@ -173,10 +173,12 @@ export const States = {
     //  moves: { "[a-z]": 42 },
   },
   43: {
-    moves: { '.': 44 }
+    moves: { '.': 44 },
+    will: 'end'
   },
   44: {
-    will: 'end'
+    will: 'end',
+    predates: 43
   }
 };
 
@@ -210,6 +212,7 @@ export const Finals = {
   39: 'SEMI-COLON',
   40: 'COLON',
   41: 'COMMA',
+  43: 'DOT',
   44: 'DOTS'
 };
 

@@ -1,0 +1,12 @@
+Error on line 1 -> Error: Invalid character: , at position 14
+Error on line 2 -> Error: Invalid character: , at position 40
+Error on line 3 -> Error: Invalid character: , at position 5
+Error on line 4 -> Error: Invalid character: , at position 15
+Error on line 5 -> Error: Invalid character: , at position 18
+Error on line 6 -> Error: Invalid character: , at position 28
+Error on line 7 -> Error: Invalid character: , at position 22
+Error on line 8 -> Error: Invalid character: , at position 21
+Error on line 9 -> Error: Invalid character: , at position 13
+Error on line 10 -> Error: Invalid character: , at position 20
+Error on line 11 -> Error: Invalid character: , at position 7
+Error on line 12 -> Error: Invalid character: , at position 3

@@ -2,6 +2,6 @@ program.init;
 var $sdsd, $sd, $gth :string;
 {
     $sdsd = 'sfrgereg';
-    $id = false != true;
-    $id = false != true;
-} 
+    $id = false ;
+    $id = true;
+}.

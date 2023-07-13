@@ -1,12 +1,12 @@
 program.init;
 var $id2, $id3, $id4:int; $id:boolean; 
 {   
-    $id4 = 3;
+    $id4 = 30;
     $id2 = 2 + 9;
-    $id3 = 4 + $id2;
+    $id3 = 4 + $id2 + $id4;
     if ( $id ) then {
         $id = false;
     } else {
         $id = true;
     };
-}
+}.
