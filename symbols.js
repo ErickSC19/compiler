@@ -95,37 +95,50 @@ export const SymbolsTableGlobal = {
 };
 
 /**
- * @param {string[]} params - A string containing the tokens at the right side of the expression, including closing semicolon.
- * @param {string} rtype - The type of the identifier to be asigned
+ * @param {string[]} params - A string containing the tokens at the right side of the expression, until closing semicolon.
+ * @param {string} idToAssign - The name of the identifier to be modified
  * @returns {string} Final value.
  */
-export function optimize(params, rtype) {
+export function optimize(params, idToAssign) {
   const len = params.length;
   if (len > 2) {
-    const scopes = [[]]
-    let scope = 0;
+    let oper = "";
     for (let index = 0; index < params.length; index++) {
       const token = params[index];
-      let newVal;
-      let atype;
+      let newVal = token.value;
+      let atype; 
 
       if (token.type === "IDENTIFIER") {
         const id = SymbolsTableGlobal.get(token.value);
-        newVal = id.value;
         atype = id.type;
-      } else if(token.value === '(' || token.value === ')') {
-
+        newVal = id.value;
       } else {
-        newVal = token.value;
-        atype = token.type.toLocaleLowerCase();
-        if (newVal === "true" || newVal === "false") {
-          atype = "boolean";
+        if (token.type === "RESERVED") {
+          if (newVal === "true" || newVal === "false") {
+            atype = "boolean";
+          }
+          if (atype !== SymbolsTableGlobal.get(idToAssign).type) {
+            throw new Error("types does not match");
+          }
+        } else if (
+          token.type === "INT" ||
+          token.type === "FLOAT" ||
+          token.type === "STRING"
+        ) {
+          atype = token.type.toLocaleLowerCase();
+          if (atype !== SymbolsTableGlobal.get(idToAssign).type) {
+            throw new Error("types does not match");
+          }
         }
       }
-      if (atype !== rtype) {
-        throw new Error('types does not match');
-      }
-      scopes[scope].push(newVal)
+      oper = oper.concat(newVal);
+      // console.log('->',oper);
+    }
+    try {
+      const result = eval(oper);
+      return result;
+    } catch (error) {
+      throw new Error("error handling operation");
     }
   } else {
     let newVal;
@@ -142,11 +155,9 @@ export function optimize(params, rtype) {
         atype = "boolean";
       }
     }
-    if (atype !== rtype) {
-      throw new Error('types does not match');
+    if (atype !== SymbolsTableGlobal.get(idToAssign).type) {
+      throw new Error("types does not match");
     }
     return newVal;
   }
-
-  return len;
 }

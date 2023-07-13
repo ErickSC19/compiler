@@ -1,5 +1,5 @@
 import * as ohm from "ohm-js";
-import { SymbolsTableGlobal } from "./symbols.js";
+import { SymbolsTableGlobal, optimize } from "./symbols.js";
 const prog = ohm.grammar(String.raw`
 Lang {
   program = "program.init;" body
@@ -13,8 +13,8 @@ Lang {
   standard = "int" | "float" | "string" | "boolean"
   principal = "{" statutes "}"
   statutes = estatute ";" statutes ?
-  vec = "array[INTEGER..INTEGER" aux3
-  aux3 = ",INTEGER..INTEGER" aux3 | "]of" standard
+  vec = "array[INT..INT" aux3
+  aux3 = ",INT..INT" aux3 | "]of" standard
   estatute = asignation | forloop | whileloop | repeatloop | input | output | conditional
   asignation = var "=" expresion
   var = "IDENTIFIER" aux4?
@@ -50,7 +50,7 @@ Lang {
     | var --fvar
       | "true" 
       | "false"
-      | "INTEGER" 
+      | "INT" 
       | "FLOAT"
       | "STRING"
       | "!" expresion --neg
@@ -75,22 +75,15 @@ export const syntacticAnalizer = (tokens, rsl) => {
         if (currType) {
           SymbolsTableGlobal.add(element.value, currType, null);
         } else if (toksArr[index + 1].type === "EQUAL") {
-          let newVal;
-          let atype;
-          
-          if (toksArr[index + 2].type === "IDENTIFIER") {   
-            const id = SymbolsTableGlobal.get(toksArr[index + 2].value);
-            newVal = id.value;
-            atype = id.type;
-          } else {
-            newVal = toksArr[index + 2].value;
-            atype = toksArr[index + 2].type.toLocaleLowerCase();
-            if (newVal === "true" || newVal === "false") {
-              atype = "boolean";
-            }
-          }
-          console.log(element);
-          SymbolsTableGlobal.update(element.value, newVal, atype);
+          let atype = SymbolsTableGlobal.get(element.value).type;
+          const currArr = toksArr.slice(index + 1);
+          const opend = currArr.findIndex((el) => el.type === "SEMI-COLON");
+          const operArr = currArr.slice(1, opend);
+          console.log('----',operArr);
+          const res = optimize(operArr, element.value)
+
+          SymbolsTableGlobal.update(element.value, res, atype);
+          index = index + opend + 1;
         }
         if (
           toksArr[index + 1].type === "COLON"

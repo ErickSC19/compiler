@@ -162,7 +162,7 @@ rl.on('close', () => {
   for (let index = 0; index < rsl.length; index++) {
     const token = rsl[index];
     if (
-      token.type === 'INTEGER' ||
+      token.type === 'INT' ||
       token.type === 'FLOAT' ||
       token.type === 'IDENTIFIER' ||
       token.type === 'STRING'
