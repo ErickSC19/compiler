@@ -1,6 +1,7 @@
 program.init;
-var $id2, $id3:int; $id:boolean;
+var $id2, $id3, $id4:int; $id:boolean; 
 {   
+    $id4 = 3;
     $id2 = 2 + 9;
     $id3 = 4 + $id2;
     if ( $id ) then {

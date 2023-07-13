@@ -1,35 +1,35 @@
-import fs from 'fs';
-import readline from 'readline';
-import { States, Finals, Reserved } from './table.js';
-import { syntacticAnalizer } from './syntax.js';
-import { SymbolsTableGlobal } from './symbols.js';
+import fs from "fs";
+import readline from "readline";
+import { States, Finals, Reserved } from "./table.js";
+import { syntacticAnalizer } from "./syntax.js";
+import { SymbolsTableGlobal } from "./symbols.js";
 
-const inputFile = 'file2.txt';
-const outputFile = 'output.txt';
-const symFile = 'symtable.txt';
-const errorFile = 'error.txt';
+const inputFile = "file2.txt";
+const outputFile = "output.txt";
+const symFile = "symtable.txt";
+const errorFile = "error.txt";
 
 // Create a readable stream to read the input file line by line
-const readStream = fs.createReadStream(inputFile, 'utf8');
+const readStream = fs.createReadStream(inputFile, "utf8");
 
 // Create a writable stream to write the results to the output file
-const writeStream = fs.createWriteStream(outputFile, 'utf8');
+const writeStream = fs.createWriteStream(outputFile, "utf8");
 
 // Create a writable stream to write the results to the error file
-const errorStream = fs.createWriteStream(errorFile, 'utf8');
+const errorStream = fs.createWriteStream(errorFile, "utf8");
 
 // Create a writable stream to write the results to the error file
-const symStream = fs.createWriteStream(symFile, 'utf8');
+const symStream = fs.createWriteStream(symFile, "utf8");
 
 // Create an interface to read lines from the input stream
 const rl = readline.createInterface({
   input: readStream,
-  crlfDelay: Infinity
+  crlfDelay: Infinity,
 });
 
 // Process each line of the input file
 let lineCount = 0;
-let curr = '';
+let curr = "";
 let state = 0;
 let carry = false;
 const rsl = [];
@@ -45,7 +45,7 @@ const analyzeChar = (char, position) => {
       const match = char.match(compare);
       //console.log('Matched? -> ', !!match);
       if (match) {
-        if (currState.will === 'carry') {
+        if (currState.will === "carry") {
           carry = true;
         }
         state = currState.moves[key];
@@ -56,15 +56,15 @@ const analyzeChar = (char, position) => {
         break;
       }
     }
-  } else if (currState.will === 'end') {
+  } else if (currState.will === "end") {
     rsl.push({ type: Finals[state], value: curr.trim() });
     carry = false;
     matched = true;
     //console.log('--> final -> ', curr);
     state = 0;
-    curr = '';
+    curr = "";
     return true;
-  } else if (currState.will === 'reserved') {
+  } else if (currState.will === "reserved") {
     if (Object.keys(Reserved).includes(curr[0])) {
       for (let index = 0; index < Reserved[curr[0]].length; index++) {
         const word = Reserved[curr[0]][index];
@@ -72,12 +72,12 @@ const analyzeChar = (char, position) => {
           //console.log();
           if (word.length === curr.length) {
             //console.log('Reserved -> ', word, ' to: <', curr, '>');
-            rsl.push({ type: 'RESERVED', value: curr.trim() });
+            rsl.push({ type: "RESERVED", value: curr.trim() });
             carry = false;
             matched = true;
             //console.log('--> final -> ', curr);
             state = 0;
-            curr = '';
+            curr = "";
             return true;
           } else {
             curr = curr + char;
@@ -90,7 +90,7 @@ const analyzeChar = (char, position) => {
     }
   }
   if (!matched) {
-    if (currState.will === 'end') {
+    if (currState.will === "end") {
       if (currState.predates) {
         if (Finals[currState.predates] === rsl[rsl.length - 1].type) {
           rsl.pop();
@@ -101,7 +101,7 @@ const analyzeChar = (char, position) => {
       matched = true;
       //console.log('--> final -> ', curr);
       state = 0;
-      curr = '';
+      curr = "";
       return true;
     } else {
       throw new Error(`Invalid character: ${char}, at position ${position}`);
@@ -109,16 +109,16 @@ const analyzeChar = (char, position) => {
   }
 };
 
-rl.on('line', (line) => {
+rl.on("line", (line) => {
   try {
-    const chars = line.split('');
+    const chars = line.split("");
     //console.log(chars, chars.length);
     for (let index = 0; index <= chars.length; index++) {
       let char;
       if (index < chars.length) {
         char = chars[index];
       } else {
-        char = ' ';
+        char = " ";
       }
       const pos = index + 1;
       //console.log('   State -> ', state, ' - Pos -> ', index);
@@ -130,59 +130,57 @@ rl.on('line', (line) => {
     lineCount++;
     // Write the results to the output file
     writeStream.write(
-      rsl.map((token) => JSON.stringify(token)).join('\n') + '\n'
+      rsl.map((token) => JSON.stringify(token)).join("\n") + "\n"
     );
   } catch (error) {
     lineCount++;
     // writes correct ones
     if (rsl) {
       writeStream.write(
-        rsl.map((token) => JSON.stringify(token)).join('\n') + '\n'
+        rsl.map((token) => JSON.stringify(token)).join("\n") + "\n"
       );
     }
     // writes error
-    errorStream.write('Error on line ' + lineCount + ' -> ' + error + '\n');
-    console.error('Error on line ' + lineCount + ' -> ' + error + '\n');
+    errorStream.write("Error on line " + lineCount + " -> " + error + "\n");
+    console.error("Error on line " + lineCount + " -> " + error + "\n");
     // rl.off();
   }
 });
 
 // Close the write stream when all lines have been processed
-rl.on('close', () => {
+rl.on("close", () => {
   if (carry) {
     console.error(
-      'Error on line ' + lineCount + ' -> ' + curr + ' was not closed \n'
+      "Error on line " + lineCount + " -> " + curr + " was not closed \n"
     );
     errorStream.write(
-      'Error on line ' + lineCount + ' -> ' + curr + ' was not closed \n'
+      "Error on line " + lineCount + " -> " + curr + " was not closed \n"
     );
   }
-  let res = '';
-  let tks = '';
+  let res = "";
   for (let index = 0; index < rsl.length; index++) {
     const token = rsl[index];
     if (
-      token.type === 'INT' ||
-      token.type === 'FLOAT' ||
-      token.type === 'IDENTIFIER' ||
-      token.type === 'STRING'
+      token.type === "INT" ||
+      token.type === "FLOAT" ||
+      token.type === "IDENTIFIER" ||
+      token.type === "STRING"
     ) {
       res = res.concat(`${token.type}`);
       // tokens = tokens + element.type;
-    } else if (token.type !== 'COMMENT') {
+    } else if (token.type !== "COMMENT") {
       res = res.concat(`${token.value}`);
       // tokens = tokens + curr;
     }
-    tks = tks.concat(`${token.value}`);
   }
-  // console.log('---->', res);
+  console.log("---> Correct Lexical");
   try {
-    console.log(tks);
+    console.log("--TOKENS-- \n tokens->", res);
     const r = syntacticAnalizer(res, rsl);
-    console.log(r);
+    console.log("Symbols->", r);
     symStream.write(JSON.stringify(r));
   } catch (error) {
-    console.log(rsl);
+    //console.log(rsl);
     console.log(error);
     errorStream.write(`${error}`);
   }

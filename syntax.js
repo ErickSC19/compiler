@@ -60,6 +60,7 @@ Lang {
 export const syntacticAnalizer = (tokens, rsl) => {
   const matchResult = prog.match(tokens);
   if (!matchResult.failed()) {
+    console.log("---> Correct Syntax");
     const toksArr = rsl;
     let declaring = false;
     let currType = "";
@@ -79,7 +80,7 @@ export const syntacticAnalizer = (tokens, rsl) => {
           const currArr = toksArr.slice(index + 1);
           const opend = currArr.findIndex((el) => el.type === "SEMI-COLON");
           const operArr = currArr.slice(1, opend);
-          console.log('----',operArr);
+          // console.log('----',operArr);
           const res = optimize(operArr, element.value)
 
           SymbolsTableGlobal.update(element.value, res, atype);
@@ -99,7 +100,7 @@ export const syntacticAnalizer = (tokens, rsl) => {
         }
       }
     }
-    console.log("Finished successfully");
+    console.log("---> Finished successfully");
     return SymbolsTableGlobal.symbols;
   } else {
     throw new Error(`Syntax Error: ${matchResult.message}`);

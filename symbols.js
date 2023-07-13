@@ -101,12 +101,13 @@ export const SymbolsTableGlobal = {
  */
 export function optimize(params, idToAssign) {
   const len = params.length;
+  const assignType = SymbolsTableGlobal.get(idToAssign).type;
   if (len > 2) {
     let oper = "";
     for (let index = 0; index < params.length; index++) {
       const token = params[index];
       let newVal = token.value;
-      let atype; 
+      let atype = "";
 
       if (token.type === "IDENTIFIER") {
         const id = SymbolsTableGlobal.get(token.value);
@@ -117,20 +118,19 @@ export function optimize(params, idToAssign) {
           if (newVal === "true" || newVal === "false") {
             atype = "boolean";
           }
-          if (atype !== SymbolsTableGlobal.get(idToAssign).type) {
-            throw new Error("types does not match");
-          }
         } else if (
           token.type === "INT" ||
           token.type === "FLOAT" ||
           token.type === "STRING"
         ) {
           atype = token.type.toLocaleLowerCase();
-          if (atype !== SymbolsTableGlobal.get(idToAssign).type) {
-            throw new Error("types does not match");
-          }
         }
       }
+
+      if (atype && atype !== assignType) {
+        throw new Error("types does not match");
+      }
+
       oper = oper.concat(newVal);
       // console.log('->',oper);
     }
@@ -155,7 +155,7 @@ export function optimize(params, idToAssign) {
         atype = "boolean";
       }
     }
-    if (atype !== SymbolsTableGlobal.get(idToAssign).type) {
+    if (atype !== assignType) {
       throw new Error("types does not match");
     }
     return newVal;
