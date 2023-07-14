@@ -103,7 +103,9 @@ const analyzeChar = (char, position) => {
       curr = "";
       return true;
     } else {
-      throw new Error(`Invalid character: ${char}, at position ${position}`);
+      if (char) {
+        throw new Error(`--> st:${state} Invalid character: -${char}-, at position ${position}`);
+      }
     }
   }
 };

@@ -9,4 +9,5 @@ var $id2, $id3, $id4:int; $id:boolean;
     } else {
         $id = true;
     };
+    $id3 = 12;
 }.
